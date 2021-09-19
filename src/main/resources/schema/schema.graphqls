@@ -1,0 +1,96 @@
+type Query {
+    shows(titleFilter: String): [Show]
+
+    # demo for simple fetcher
+    hello(people: [Person]): String
+    greet(person: Person): String
+
+    # demo for default type resolver
+    schoolStudents: [Student]
+    collegeStudents: [Student]
+    students: [Student]
+    diplomaStudents: [Student]
+    highSchoolStudents: [HighSchoolStudent]
+
+    # demo for getting headers, cookies
+    host: String
+    customReqHeader: String
+    cookieWithDefault: String
+    contentType: String
+
+    # demo for getting custom context
+    withContext: String
+    customContextWithReq: String
+}
+
+type Mutation {
+    addReview(review: SubmittedReview): [Review]
+    addReviews(reviews: [SubmittedReview]): [Review]
+    addArtwork(showId: Int!, upload: Upload!): [Image]! @skipcodegen
+}
+
+type Show {
+    id: Int
+    title: String
+    releaseYear: Int
+    reviews(minScore:Int): [Review]
+    artwork: [Image]
+}
+
+type Image {
+    url: String
+}
+
+type Review {
+    username: String
+    starScore: Int
+    submittedDate: DateTime
+}
+
+interface Student {
+    name: String
+}
+interface HighSchoolStudent {
+    name: String
+}
+type SchoolStudent implements Student,HighSchoolStudent {
+    name: String
+    schoolName: String
+    standard: Int
+}
+
+type DipCollegeStudent implements HighSchoolStudent {
+    name: String
+    collegeName: String
+    degree: String
+    major: String
+    year: Int
+}
+
+type CollegeStudent implements Student {
+    name: String
+    collegeName: String
+    degree: String
+    major: String
+    year: Int
+}
+
+type Subscription {
+    reviewAdded(showId: Int!): Review
+}
+
+input SubmittedReview {
+    showId: Int!
+    username: String!
+    starScore: Int!
+}
+
+input Person {
+    firstName: String
+    lastName: String
+}
+
+scalar DateTime
+scalar Upload
+directive @skipcodegen on FIELD_DEFINITION
+
